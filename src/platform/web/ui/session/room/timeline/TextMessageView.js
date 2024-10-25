@@ -120,6 +120,9 @@ const formatFunction = {
     //HACKATHON: WIP code; adding questionnaire format
     choice: choicePart => text(choicePart.options),
     boolean: booleanPart => text(booleanPart.options),
+    date: datePart => text(datePart.options),
+    string: textPart => text(textPart.text),
+    integer: integerPart => text(integerPart.text),
     link: linkPart => tag.a({href: linkPart.url, className: "link", target: "_blank", rel: "noopener" }, renderParts(linkPart.inlines)),
     pill: renderPill,
     format: formatPart => tag[formatPart.format](renderParts(formatPart.children)),
@@ -140,7 +143,8 @@ function renderPart(part, vm) {
     const fragment = document.createDocumentFragment();
 
     switch(part.type){
-        case 'choice': //goal: case per type of question (slider, choice etc.)
+        case 'choice':
+        console.log("IN TYPE CHOICE");
             fragment.appendChild(tag.br());
                 for (let i = 0; i < part.options.length; i++) {
                 const option = part.options[i];
@@ -162,8 +166,8 @@ function renderPart(part, vm) {
                 replyButtonYes.className = 'replyButton';
                 replyButtonNo.className = 'replyButton';
                 replyButtonWrapper.className = 'replyButtonWrapper';
-                replyButtonYes.textContent = "Yes";
-                replyButtonNo.textContent = "No";
+                replyButtonYes.textContent = "Ja";
+                replyButtonNo.textContent = "Nein";
                 replyButtonYes.addEventListener('click', () => {sendMessage(replyButtonYes.textContent)});
                 replyButtonNo.addEventListener('click', () => {sendMessage(replyButtonYes.textContent)});
 
@@ -194,7 +198,7 @@ function renderPart(part, vm) {
 
 function sendMessage(message) {
     const inputElement = document.querySelector('#msg_comp');
-    inputElement.innerHTML = message; 
+    inputElement.value = message; 
     console.log("before");
     console.log(inputElement.innerHTML);  
     const inputButton = document.querySelector('#sendButton');

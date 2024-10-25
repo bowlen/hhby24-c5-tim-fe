@@ -34,6 +34,19 @@ export function parsePlainBody(body) {
 }
 //HACKATHON: WIP code to parse questionnaire
 export function parseQuestionnaire(body, type) {
+
+    const regex = /\[([^\]]+)\]/g; // Match all occurrences of [option]
+    let options = [];
+    let match;
+    let lastIndex;
+    
+    while ((match = regex.exec(body)) !== null) {
+      options.push(match[1]); // Push the matched option to the array
+      lastIndex = regex.lastIndex;
+      regex.lastIndex = lastIndex - match[0].length; // Reset the search position
+      body = body.replace(match[0], ''); // Remove the matched option from the remaining string
+    }
+
     const parts = [];
     const lines = body.split("\n");
 
@@ -55,15 +68,6 @@ export function parseQuestionnaire(body, type) {
             parts.push(new NewLinePart());
         }
 
-        const regex = /\[([^\]]+)\]/g; // Match all occurrences of [option]
-        let options = [];
-        let match;
-
-        while ((match = regex.exec(body)) !== null) {
-        options.push(match[1]); // Push the matched option to the array
-        body = body.replace(match[0], ''); // Remove the matched option from the remaining string
-        }
-
 
     switch (type) {
         case 'boolean':
@@ -76,6 +80,12 @@ export function parseQuestionnaire(body, type) {
         case 'date':
           parts.push(new DatePart(options));
           break;
+        case 'integer':
+          parts.push(new IntegerPart(options));
+          break;
+        case 'string':
+            parts.push(new StringPart(options));
+            break;
         default:
           break;
       }
@@ -208,6 +218,20 @@ export class DatePart {
       this.options = options;
     }
     get type() { return "date"; }
+}
+
+export class StringPart {
+    constructor(options) {
+      this.options = options;
+    }
+    get type() { return "string"; }
+}
+
+export class IntegerPart {
+    constructor(options) {
+      this.options = options;
+    }
+    get type() { return "integer"; }
 }
 
 function isBlockquote(part){

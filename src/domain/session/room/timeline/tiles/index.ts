@@ -67,6 +67,9 @@ export function tileClassForEntry(entry: TimelineEntry, options: Options): TileC
                     case "m.emote":
                     //HACKATHON: WIP code for custom event types - more to be added (choice, slider etc.)
                     case "m.question":
+                    case "m.boolean":
+                    case "m.choice":
+                        //TODO
                         return TextTile;
                     case "m.image":
                         return ImageTile;
