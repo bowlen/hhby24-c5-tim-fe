@@ -61,11 +61,16 @@ export class TextTile extends BaseTextTile {
 
         //HACKATHON: WIP code to parse questionnaire (currently "all" msg types are treated as questionnaire)
 
-        if (this._getContent()?.msgtype == "m.question") {
-            let options = this._getContent().options;
-            let type = this._getContent().type;
-            messageBody = parseQuestionnaire(body, type, options);
+        if (this._getContent()?.msgtype == "m.choice") {
+            let type = "choice";
+            messageBody = parseQuestionnaire(body, type);
         }
+
+        if (this._getContent()?.msgtype == "m.boolean") {
+            let type = "boolean";
+            messageBody = parseQuestionnaire(body, type);
+        }
+
         return messageBody;
     }
 }

@@ -33,7 +33,7 @@ export function parsePlainBody(body) {
     return new MessageBody(body, parts);
 }
 //HACKATHON: WIP code to parse questionnaire
-export function parseQuestionnaire(body, type, options) {
+export function parseQuestionnaire(body, type) {
     const parts = [];
     const lines = body.split("\n");
 
@@ -55,7 +55,16 @@ export function parseQuestionnaire(body, type, options) {
             parts.push(new NewLinePart());
         }
 
-    console.log(body.trim().toLowerCase().split(':')[0])
+        const regex = /\[([^\]]+)\]/g; // Match all occurrences of [option]
+        let options = [];
+        let match;
+
+        while ((match = regex.exec(body)) !== null) {
+        options.push(match[1]); // Push the matched option to the array
+        body = body.replace(match[0], ''); // Remove the matched option from the remaining string
+        }
+
+
     switch (type) {
         case 'boolean':
           options = ["Ja", "Nein"];
