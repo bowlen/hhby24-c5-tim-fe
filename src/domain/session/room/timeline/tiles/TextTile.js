@@ -58,6 +58,10 @@ export class TextTile extends BaseTextTile {
                 type = "choice";
                 messageBody = parseQuestionnaire(body, type);
             break;
+            case 'm.multichoice':
+                type = "multichoice";
+                messageBody = parseQuestionnaire(body, type);
+            break;
             case 'm.boolean':
                 type = "boolean";
                 messageBody = parseQuestionnaire(body, type);
@@ -66,8 +70,8 @@ export class TextTile extends BaseTextTile {
                 type = "date";
                 messageBody = parseQuestionnaire(body, type);
             break;
-            case 'm.string':
-                type = "string";
+            case 'm.freetext':
+                type = "freetext";
                 messageBody = parseQuestionnaire(body, type);
             break;
             case 'm.integer':
@@ -75,15 +79,12 @@ export class TextTile extends BaseTextTile {
                 messageBody = parseQuestionnaire(body, type);
             break;
             default:
-                console.log(msgtype + " results in default");
                 if (format === BodyFormat.Html) {
                     messageBody = parseHTMLBody(this.platform, this._mediaRepository, body);
                 } else {
                     messageBody = parsePlainBody(body);
                 }
             }
-        //HACKATHON: WIP code to parse questionnaire (currently "all" msg types are treated as questionnaire)
-
 
         return messageBody;
     }

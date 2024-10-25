@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { BooleanPart, ChoicePart } from "../../../../../../domain/session/room/timeline/MessageBody.js";
 import {tag, text} from "../../../general/html";
 import {BaseMessageView} from "./BaseMessageView.js";
 import {ReplyPreviewError, ReplyPreviewView} from "./ReplyPreviewView.js";
@@ -119,9 +118,10 @@ const formatFunction = {
     text: textPart => text(textPart.text),
     //HACKATHON: WIP code; adding questionnaire format
     choice: choicePart => text(choicePart.options),
+    multichoice: multiChoicePart => text(multiChoicePart.options),
     boolean: booleanPart => text(booleanPart.options),
     date: datePart => text(datePart.options),
-    string: textPart => text(textPart.text),
+    freetext: freeTextPart => text(freeTextPart.text),
     integer: integerPart => text(integerPart.text),
     link: linkPart => tag.a({href: linkPart.url, className: "link", target: "_blank", rel: "noopener" }, renderParts(linkPart.inlines)),
     pill: renderPill,
@@ -144,7 +144,6 @@ function renderPart(part, vm) {
 
     switch(part.type){
         case 'choice':
-        console.log("IN TYPE CHOICE");
             fragment.appendChild(tag.br());
                 for (let i = 0; i < part.options.length; i++) {
                 const option = part.options[i];
@@ -152,7 +151,7 @@ function renderPart(part, vm) {
                 const replyButton = document.createElement('button');
                 replyButton.className = 'replyButton';
                 replyButtonWrapper.className = 'replyButtonWrapper';
-                replyButton.textContent = option;
+                replyButton.textContent = (option.replace(/^(\d{2})#/, ""));
                 replyButton.addEventListener('click', () => {sendMessage(option)});
                 replyButtonWrapper.appendChild(replyButton);
                 fragment.appendChild(replyButtonWrapper);
@@ -167,9 +166,11 @@ function renderPart(part, vm) {
                 replyButtonNo.className = 'replyButton';
                 replyButtonWrapper.className = 'replyButtonWrapper';
                 replyButtonYes.textContent = "Ja";
+                replyButtonYes.value = "true";
                 replyButtonNo.textContent = "Nein";
-                replyButtonYes.addEventListener('click', () => {sendMessage(replyButtonYes.textContent)});
-                replyButtonNo.addEventListener('click', () => {sendMessage(replyButtonYes.textContent)});
+                replyButtonNo.value = "false";
+                replyButtonYes.addEventListener('click', () => {sendMessage(replyButtonYes.value)});
+                replyButtonNo.addEventListener('click', () => {sendMessage(replyButtonNo.value)});
 
                 replyButtonWrapper.appendChild(replyButtonYes);
                 replyButtonWrapper.appendChild(replyButtonNo);
@@ -189,6 +190,47 @@ function renderPart(part, vm) {
 
             fragment.appendChild(datePickerWrapper);
             return fragment;
+
+        case 'multichoice':
+            fragment.appendChild(tag.br());
+            let selectedOptions = [];
+
+            const checkboxWrapper = document.createElement('div');
+            checkboxWrapper.className = 'checkboxWrapper';
+            for (let i = 0; i < part.options.length; i++) {
+                const option = part.options[i];
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.name = 'option';
+                checkbox.value = option;
+                checkbox.className = 'custom-checkbox';
+                const label = document.createElement('label');
+                label.textContent = option.replace(/^(\d{2})#/, "");
+                label.htmlFor = 'option';
+                label.className = 'custom-checkbox-label';
+                fragment.appendChild(checkboxWrapper)
+                checkboxWrapper.appendChild(checkbox);
+                checkboxWrapper.appendChild(label);
+            }
+                        
+            const confirmButton = document.createElement('button');
+            confirmButton.textContent = 'bestätigen';
+            confirmButton.className= 'replyButton';
+            confirmButton.addEventListener('click', () => {
+                selectedOptions = [];
+                const parent = document.querySelector('.checkboxWrapper');
+                const checkboxes = parent.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        selectedOptions.push(checkbox.value);
+                    }
+                });
+                sendMessage(selectedOptions);
+            });
+            fragment.appendChild(confirmButton);
+            
+            return fragment;
+
     }
         
     return f(part);

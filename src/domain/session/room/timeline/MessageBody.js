@@ -77,14 +77,17 @@ export function parseQuestionnaire(body, type) {
         case 'choice':
           parts.push(new ChoicePart(options));
           break;
+        case 'multichoice':
+            parts.push(new MultiChoicePart(options));
+        break;
         case 'date':
           parts.push(new DatePart(options));
           break;
         case 'integer':
           parts.push(new IntegerPart(options));
           break;
-        case 'string':
-            parts.push(new StringPart(options));
+        case 'freetext':
+            parts.push(new FreeTextPart(options));
             break;
         default:
           break;
@@ -206,6 +209,14 @@ export class ChoicePart {
     get type() { return "choice"; }
 }
 
+export class MultiChoicePart {
+    constructor(options) {
+        this.options = options;
+    }
+    get type() { return "multichoice"; }
+
+}
+
 export class BooleanPart {
     constructor(options) {
       this.options = options;
@@ -220,16 +231,16 @@ export class DatePart {
     get type() { return "date"; }
 }
 
-export class StringPart {
-    constructor(options) {
-      this.options = options;
+export class FreeTextPart {
+    constructor(text) {
+      this.text = text;
     }
-    get type() { return "string"; }
+    get type() { return "freetext"; }
 }
 
 export class IntegerPart {
-    constructor(options) {
-      this.options = options;
+    constructor(text) {
+      this.text = text;
     }
     get type() { return "integer"; }
 }
