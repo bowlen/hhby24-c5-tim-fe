@@ -248,6 +248,13 @@ a.button-action {
 .replyButton:focus:not(:active) {
   box-shadow: rgba(40, 170, 255, 0.25) 0 0 0 .125em;
 }
+
+.replyButton:disabled {
+  background-color: #B3B3B3;
+  background-image: none;
+  cursor: not-allowed;
+}
+
 .FilterField {
     background-image: url('icons/search.svg?primary=icon-color');
     background-repeat: no-repeat;
