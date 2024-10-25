@@ -172,6 +172,19 @@ function renderPart(part, vm) {
 
                 fragment.appendChild(replyButtonWrapper);
                 return fragment;
+        case 'date':
+            fragment.appendChild(tag.br());
+            const datePickerWrapper = document.createElement('div');
+            const datePicker = document.createElement('input');
+            datePicker.type = 'date';
+            datePicker.className = 'datePicker';
+            datePickerWrapper.className = 'datePickerWrapper';
+            datePicker.addEventListener('change', () => {sendMessage(datePicker.value)});
+
+            datePickerWrapper.appendChild(datePicker);
+
+            fragment.appendChild(datePickerWrapper);
+            return fragment;
     }
         
     return f(part);

@@ -68,10 +68,13 @@ export function parseQuestionnaire(body, type) {
     switch (type) {
         case 'boolean':
           options = ["Ja", "Nein"];
-          parts.push(new booleanPart(options));
+          parts.push(new BooleanPart(options));
           break;
         case 'choice':
-          parts.push(new choicePart(options));
+          parts.push(new ChoicePart(options));
+          break;
+        case 'date':
+          parts.push(new DatePart(options));
           break;
         default:
           break;
@@ -198,6 +201,13 @@ export class BooleanPart {
       this.options = options;
     }
     get type() { return "boolean"; }
+}
+
+export class DatePart {
+    constructor(options) {
+      this.options = options;
+    }
+    get type() { return "date"; }
 }
 
 function isBlockquote(part){
