@@ -186,14 +186,14 @@ export class TextPart {
 }
 
 //HACKATHON: WIP code to export custom part types
-export class choicePart {
+export class ChoicePart {
     constructor(options) {
       this.options = options;
     }
     get type() { return "choice"; }
 }
 
-export class booleanPart {
+export class BooleanPart {
     constructor(options) {
       this.options = options;
     }
