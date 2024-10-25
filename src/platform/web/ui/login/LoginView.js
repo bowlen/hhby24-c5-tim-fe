@@ -26,6 +26,16 @@ export class LoginView extends TemplateView {
     render(t, vm) {
         const disabled = vm => vm.isBusy;
 
+        const cardIcon = t.span({
+            className: "bi bi-credit-card",
+            style: "cursor: default;",
+        })
+
+        const arrowIcon = t.span({
+            className: "bi bi-arrow-clockwise",
+            style: "cursor: default;",
+        })
+
         return t.div({className: "PreSessionScreen"}, [
             /*t.button({
                 className: "button-utility LoginView_back",
@@ -35,10 +45,18 @@ export class LoginView extends TemplateView {
             t.div({ className: "LoginView_header" }, [ 
                 t.h1([vm.i18n`Anmelden`])
             ]),
-            t.h3([vm.i18n`Geben Sie Ihre GesundheitsID-Pin ein.`]),
+            t.h3({ className: "LoginView_subtitle" }, [vm.i18n`Geben Sie Ihre GesundheitsID-Pin ein.`]),
             t.mapView(vm => vm.completeSSOLoginViewModel, vm => vm ? new CompleteSSOView(vm) : null),
             t.if(vm => vm.isFetchingLoginOptions, t => t.div({className: "LoginView_query-spinner"}, [spinner(t), t.p("Fetching available login options...")])),
             t.mapView(vm => vm.passwordLoginViewModel, vm => vm ? new PasswordLoginView(vm): null),
+            t.div({ className: "icon-text" }, [
+                cardIcon, 
+                t.h3({ className: "bottom-line" },[ vm.i18n`Mit Alternative anmelden`])
+            ]),
+            t.div({ className: "icon-text" }, [
+                arrowIcon, 
+                t.h3({ className: "bottom-line" },[ vm.i18n`GesundheitsID-PIN vergessen`])
+            ]),
             t.mapView(vm => vm.loadViewModel, loadViewModel => loadViewModel ? new SessionLoadStatusView(loadViewModel) : null),
             // use t.mapView rather than t.if to create a new view when the view model changes too
         ]);

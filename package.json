@@ -67,6 +67,7 @@
     "another-json": "^0.2.0",
     "base64-arraybuffer": "^0.2.0",
     "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
     "dompurify": "^2.3.0",
     "off-color": "^2.0.0"
   }
