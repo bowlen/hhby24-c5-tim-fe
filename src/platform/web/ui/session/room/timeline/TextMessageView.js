@@ -170,12 +170,12 @@ function renderPart(part, vm) {
 
 function sendMessage(message) {
     const inputElement = document.querySelector('#msg_comp');
-    inputElement.innerHTML = message; 
+    inputElement.value = message; 
     console.log("before");
     console.log(inputElement.innerHTML);  
     const inputButton = document.querySelector('#sendButton');
     inputButton.click();
-    inputElement.innerHTML = null;
+    inputElement.value = null;
     console.log("after");
     console.log(inputElement.innerHTML);
 }
