@@ -149,6 +149,9 @@ function renderPart(part, vm) {
                 replySliderWrapper.appendChild(replySlider);
                 fragment.appendChild(replySliderWrapper);
             } else {
+                const buttonContainer = document.createElement('div');
+                buttonContainer.className = 'button-container';
+            
                 for (let i = 0; i < part.options.length; i++) {
                 const option = part.options[i];
                 const replyButtonWrapper = document.createElement('div');
@@ -156,10 +159,14 @@ function renderPart(part, vm) {
                 replyButton.className = 'replyButton';
                 replyButtonWrapper.className = 'replyButtonWrapper';
                 replyButton.textContent = option;
+                
                 replyButton.addEventListener('click', () => {sendMessage(option)});
                 replyButtonWrapper.appendChild(replyButton);
+
                 fragment.appendChild(replyButtonWrapper);
+                buttonContainer.appendChild(replyButtonWrapper);
                 }
+                fragment.appendChild(buttonContainer);
             }
             return fragment;
     }
