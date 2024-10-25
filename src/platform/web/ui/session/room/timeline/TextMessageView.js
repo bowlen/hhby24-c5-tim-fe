@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 /*
 Copyright 2020 Bruno Windels <bruno@windels.cloud>
 
@@ -14,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { BooleanPart, ChoicePart } from "../../../../../../domain/session/room/timeline/MessageBody.js";
 import {tag, text} from "../../../general/html";
 import {BaseMessageView} from "./BaseMessageView.js";
 import {ReplyPreviewError, ReplyPreviewView} from "./ReplyPreviewView.js";
@@ -116,7 +118,8 @@ const formatFunction = {
     code: codePart => tag.code(text(codePart.text)),
     text: textPart => text(textPart.text),
     //HACKATHON: WIP code; adding questionnaire format
-    questionnaire: questionnairePart => text(questionnairePart.options),
+    choice: choicePart => text(choicePart.options),
+    boolean: booleanPart => text(booleanPart.options),
     link: linkPart => tag.a({href: linkPart.url, className: "link", target: "_blank", rel: "noopener" }, renderParts(linkPart.inlines)),
     pill: renderPill,
     format: formatPart => tag[formatPart.format](renderParts(formatPart.children)),
@@ -132,23 +135,13 @@ function renderPart(part, vm) {
     if (!f) {
         return text(`[unknown part type ${part.type}]`);
     }
+
     //HACKATHON: WIP code; rendering reply interfaces based on Event/MessageType
     const fragment = document.createDocumentFragment();
 
     switch(part.type){
-        case 'questionnaire': //goal: case per type of question (slider, choice etc.)
+        case 'choice': //goal: case per type of question (slider, choice etc.)
             fragment.appendChild(tag.br());
-            if(part.options.length==1 && part.options[0] === parseInt(part.options[0], 10)){
-                const replySliderWrapper = document.createElement('div');
-                const replySlider = document.createElement('input');
-                replySlider.id = "volume";
-                replySlider.type = "range";
-                replySlider.min = 0;
-                replySlider.max = part.options[0];
-                replySlider.step = 1;
-                replySliderWrapper.appendChild(replySlider);
-                fragment.appendChild(replySliderWrapper);
-            } else {
                 for (let i = 0; i < part.options.length; i++) {
                 const option = part.options[i];
                 const replyButtonWrapper = document.createElement('div');
@@ -160,9 +153,27 @@ function renderPart(part, vm) {
                 replyButtonWrapper.appendChild(replyButton);
                 fragment.appendChild(replyButtonWrapper);
                 }
-            }
-            return fragment;
+                return fragment;
+        case 'boolean':
+                fragment.appendChild(tag.br());
+                const replyButtonWrapper = document.createElement('div');
+                const replyButtonYes = document.createElement('button');
+                const replyButtonNo = document.createElement('button');
+                replyButtonYes.className = 'replyButton';
+                replyButtonNo.className = 'replyButton';
+                replyButtonWrapper.className = 'replyButtonWrapper';
+                replyButtonYes.textContent = "Yes";
+                replyButtonNo.textContent = "No";
+                replyButtonYes.addEventListener('click', () => {sendMessage(replyButtonYes.textContent)});
+                replyButtonNo.addEventListener('click', () => {sendMessage(replyButtonYes.textContent)});
+
+                replyButtonWrapper.appendChild(replyButtonYes);
+                replyButtonWrapper.appendChild(replyButtonNo);
+
+                fragment.appendChild(replyButtonWrapper);
+                return fragment;
     }
+        
     return f(part);
 }
 
