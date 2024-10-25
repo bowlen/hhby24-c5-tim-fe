@@ -16,6 +16,7 @@ limitations under the License.
 
 import {BaseTextTile, BodyFormat} from "./BaseTextTile.js";
 import {parsePlainBody} from "../MessageBody.js";
+import {parseQuestionnaire} from "../MessageBody.js";
 import {parseHTMLBody} from "../deserialize.js";
 
 export class TextTile extends BaseTextTile {
@@ -49,13 +50,19 @@ export class TextTile extends BaseTextTile {
 
     _parseBody(body, format) {
         let messageBody;
-        if (format === BodyFormat.Html) {
-            messageBody = parseHTMLBody(this.platform, this._mediaRepository, body);
-        } else {
-            messageBody = parsePlainBody(body);
-        }
-        if (this._getContent()?.msgtype === "m.emote") {
-            messageBody.insertEmote(`* ${this.displayName} `);
+        // if (format === BodyFormat.Html) {
+        //     messageBody = parseHTMLBody(this.platform, this._mediaRepository, body);
+        // } else {
+        //     messageBody = parsePlainBody(body);
+        // }
+        // if (this._getContent()?.msgtype === "m.emote") {
+        //     messageBody.insertEmote(`* ${this.displayName} `);
+        // }
+
+        //HACKATHON: WIP code to parse questionnaire (currently "all" msg types are treated as questionnaire)
+
+        if (this._getContent()?.msgtype != "m.emote") {
+            messageBody = parseQuestionnaire(body);
         }
         return messageBody;
     }

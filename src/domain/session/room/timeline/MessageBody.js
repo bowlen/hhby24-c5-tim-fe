@@ -32,6 +32,60 @@ export function parsePlainBody(body) {
 
     return new MessageBody(body, parts);
 }
+//HACKATHON: WIP code to parse questionnaire
+export function parseQuestionnaire(body) {
+    const parts = [];
+    const lines = body.split("\n");
+    console.log(body)
+    var options;
+    console.log(body.trim().toLowerCase().split(':')[0])
+    switch (body.trim().toLowerCase().split(':')[0]) {
+        case 'num':
+          options = ["1", "2", "3", "4", "5"];
+          break;
+        case 'y/n':
+          options = ["Yes", "No", "Maybe"];
+          break;
+        case 'slider10':
+            options = [10];
+        break;
+        case 'slider5':
+            options = [5];
+        break;
+        case 'slider1000':
+            options = [1000];
+        break;
+        case 'sonstige':          
+          options = ["Click Me", "No, Click Me!"];
+          console.log('Sonstige: ');
+          break;
+        default:
+          options = [];
+          console.log('Unknown: ');
+      }
+
+    const linkifyCallback = (text, isLink) => {
+        if (isLink) {
+            parts.push(new LinkPart(text, [new TextPart(text)]));
+        } else {
+            parts.push(new TextPart(text));
+        }
+    }; 
+
+    for (let i = 0; i < lines.length; i += 1) {
+        const line = lines[i];
+        if (line.length) {
+            linkify(line, linkifyCallback);
+        }
+        const isLastLine = i >= (lines.length - 1);
+        if (!isLastLine) {
+            parts.push(new NewLinePart());
+        }
+
+    parts.push(new QuestionnairePart(options));
+    return new MessageBody(body, parts);
+    }
+}
 
 export function stringAsBody(body) {
     return new MessageBody(body, [new TextPart(body)]);
@@ -135,6 +189,14 @@ export class TextPart {
     }
 
     get type() { return "text"; }
+}
+//HACKATHON: WIP code to export QuestionnairePart
+export class QuestionnairePart {
+    constructor(options) {
+      this.options = options;
+    }
+  
+    get type() { return "questionnaire"; }
 }
 
 function isBlockquote(part){

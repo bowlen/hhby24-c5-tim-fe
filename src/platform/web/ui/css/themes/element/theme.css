@@ -200,6 +200,54 @@ a.button-action {
     background-image: url('icons/disable-grid.svg?primary=icon-color');
 }
 
+.replyButtonWrapper {
+    display: inline-block; 
+    margin-right: 5px;
+}
+
+.replyButton {
+  align-items: center;
+  appearance: none;
+  background-color: #3EB2FD;
+  background-image: linear-gradient(1deg, #4F58FD, #149BF3 99%);
+  background-size: calc(100% + 20px) calc(100% + 20px);
+  border-radius: 100px;
+  border-width: 0;
+  box-shadow: none;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: CircularStd,sans-serif;
+  font-size: 1rem;
+  height: auto;
+  justify-content: center;
+  line-height: 1.5;
+  padding: 6px 20px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color .2s,background-position .2s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: top;
+  white-space: nowrap;
+  margin: 5px;
+}
+
+.replyButton:active,
+.replyButton:focus {
+  outline: none;
+}
+
+.replyButton:hover {
+  background-position: -20px -20px;
+}
+
+.replyButton:focus:not(:active) {
+  box-shadow: rgba(40, 170, 255, 0.25) 0 0 0 .125em;
+}
 .FilterField {
     background-image: url('icons/search.svg?primary=icon-color');
     background-repeat: no-repeat;

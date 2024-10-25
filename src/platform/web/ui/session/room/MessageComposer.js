@@ -30,6 +30,8 @@ export class MessageComposer extends TemplateView {
 
     render(t, vm) {
         this._input = t.textarea({
+            //HACKATHON: WIP code
+            id:"msg_comp",
             onKeydown: e => this._onKeyDown(e),
             onInput: () => {
                 vm.setInput(this._input.value);
@@ -67,6 +69,8 @@ export class MessageComposer extends TemplateView {
             }, vm.i18n`Send file`),
             t.button({
                 className: "send",
+                //HACKATHON: WIP code to send reply using the sendButton logic
+                id: "sendButton",
                 title: vm.i18n`Send`,
                 onClick: () => this._trySend(),
             }, vm.i18n`Send`),

@@ -50,7 +50,8 @@ export class TextMessageView extends BaseMessageView {
                 container.removeChild(container.lastChild);
             }
             for (const part of body.parts) {
-                container.appendChild(renderPart(part));
+                //HACKATHON: WIP code; just experimenting
+                container.appendChild(renderPart(part, vm));
             }
             container.appendChild(time);
         });
@@ -114,6 +115,8 @@ const formatFunction = {
     table: tableBlock => renderTable(tableBlock),
     code: codePart => tag.code(text(codePart.text)),
     text: textPart => text(textPart.text),
+    //HACKATHON: WIP code; adding questionnaire format
+    questionnaire: questionnairePart => text(questionnairePart.options),
     link: linkPart => tag.a({href: linkPart.url, className: "link", target: "_blank", rel: "noopener" }, renderParts(linkPart.inlines)),
     pill: renderPill,
     format: formatPart => tag[formatPart.format](renderParts(formatPart.children)),
@@ -123,12 +126,58 @@ const formatFunction = {
     newline: () => tag.br()
 };
 
-function renderPart(part) {
+//HACKATHON: WIP code; just experimenting
+function renderPart(part, vm) {
     const f = formatFunction[part.type];
     if (!f) {
         return text(`[unknown part type ${part.type}]`);
     }
+    //HACKATHON: WIP code; rendering reply interfaces based on Event/MessageType
+    const fragment = document.createDocumentFragment();
+
+    switch(part.type){
+        case 'questionnaire': //goal: case per type of question (slider, choice etc.)
+            fragment.appendChild(tag.br());
+            if(part.options.length==1 && part.options[0] === parseInt(part.options[0], 10)){
+                const replySliderWrapper = document.createElement('div');
+                const replySlider = document.createElement('input');
+                replySlider.id = "volume";
+                replySlider.type = "range";
+                replySlider.min = 0;
+                replySlider.max = part.options[0];
+                replySlider.step = 1;
+                replySliderWrapper.appendChild(replySlider);
+                fragment.appendChild(replySliderWrapper);
+            } else {
+                for (let i = 0; i < part.options.length; i++) {
+                const option = part.options[i];
+                const replyButtonWrapper = document.createElement('div');
+                const replyButton = document.createElement('button');
+                replyButton.className = 'replyButton';
+                replyButtonWrapper.className = 'replyButtonWrapper';
+                replyButton.textContent = option;
+                replyButton.addEventListener('click', () => {sendMessage(option)});
+                replyButtonWrapper.appendChild(replyButton);
+                fragment.appendChild(replyButtonWrapper);
+                }
+            }
+            return fragment;
+    }
     return f(part);
+}
+
+//HACKATHON: WIP code - send message from reply button to msg composer
+
+function sendMessage(message) {
+    const inputElement = document.querySelector('#msg_comp');
+    inputElement.innerHTML = message; 
+    console.log("before");
+    console.log(inputElement.innerHTML);  
+    const inputButton = document.querySelector('#sendButton');
+    inputButton.click();
+    inputElement.innerHTML = null;
+    console.log("after");
+    console.log(inputElement.innerHTML);
 }
 
 function renderParts(parts) {
