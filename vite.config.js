@@ -7,6 +7,7 @@ const themeBuilder = require("./scripts/build-plugins/rollup-plugin-build-themes
 const { defineConfig } = require("vite");
 const mergeOptions = require("merge-options").bind({ concatArrays: true });
 const { commonOptions, compiledVariables } = require("./vite.common-config.js");
+const path = require('path');
 
 export default defineConfig(({ mode }) => {
     const definePlaceholders = createPlaceholderValues(mode);
@@ -15,6 +16,11 @@ export default defineConfig(({ mode }) => {
         root: "src/platform/web",
         base: "./",
         publicDir: "./public",
+        resolve: {
+            alias: {
+                '~bootstrap': path.resolve(__dirname, 'node_modules/bootstrap'),
+            }
+        },
         build: {
             outDir: "../../../target",
             minify: true,
@@ -26,12 +32,22 @@ export default defineConfig(({ mode }) => {
                             return "[name][extname]";
                         } else if (asset.name.match(/theme-.+\.json/)) {
                             return "assets/[name][extname]";
+                        } else if (asset.name.includes("bootstrap")) {
+                            // Handle Bootstrap assets
+                            return "assets/vendor/bootstrap/[name][extname]";
                         } else {
                             return "assets/[name].[hash][extname]";
                         }
                     },
                 },
             },
+        },
+        css: {
+            preprocessorOptions: {
+                scss: {
+                    additionalData: `@import "bootstrap/scss/bootstrap";`
+                }
+            }
         },
         plugins: [
             transformServiceWorkerInDevServer(),
@@ -58,6 +74,9 @@ export default defineConfig(({ mode }) => {
                 }
             ),
         ],
+        optimizeDeps: {
+            include: ['bootstrap']
+        }
     });
 });
 
@@ -68,6 +87,10 @@ function findUnhashedFileNamesFromBundle(bundle) {
             names.push(fileName);
         }
         if (/theme-.+\.json/.test(fileName)) {
+            names.push(fileName);
+        }
+        // Add Bootstrap files to unhashed names
+        if (fileName.includes("bootstrap")) {
             names.push(fileName);
         }
     }
