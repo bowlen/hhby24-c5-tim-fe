@@ -73,7 +73,7 @@ export class LeftPanelView extends TemplateView {
         ));
         const utilitiesRow = t.div({className: "utilities"}, [
             t.a({className: "button-utility close-session", href: vm.closeUrl, "aria-label": vm.i18n`Back to account list`, title: vm.i18n`Back to account list`}),
-            t.view(new FilterField({
+            /*t.view(new FilterField({
                 i18n: vm.i18n,
                 label: vm.i18n`Filter rooms…`,
                 name: "room-filter",
@@ -85,7 +85,26 @@ export class LeftPanelView extends TemplateView {
                     }
                 },
                 clear: () => vm.clearFilter()
-            })),
+            })),*/
+            t.button({
+                onClick: () => {
+                    vm._options.session.createRoom({
+                        "creation_content": {
+                          "m.federate": false
+                        },
+                        "name": "The Grand Duke Pub 4",
+                        "preset": "public_chat",
+                        "room_alias_name": "thepub",
+                        "topic": "All about happy hour"
+                    }).then(room => {
+                        console.log(room);
+                        vm._options.session.joinRoom(room._roomId);
+                        vm._options.navigation.push("room", room._roomId);
+                        vm._currentTileVM._room.inviteUser("@praxisbot:hhm.neo.ohp.ibmgcloud.net");
+                    });
+                },
+                className: "button-login"
+            }, "Have a chat!"),
             t.button({
                 onClick: () => vm.toggleGrid(),
                 className: {
