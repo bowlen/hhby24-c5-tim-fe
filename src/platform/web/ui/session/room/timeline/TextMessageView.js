@@ -154,6 +154,7 @@ function renderPart(part, vm) {
                 replyButton.textContent = (option.replace(/^(\d{2})#/, ""));
                 replyButton.addEventListener('click', () => {sendMessage(option)});
                 replyButtonWrapper.appendChild(replyButton);
+
                 fragment.appendChild(replyButtonWrapper);
                 }
                 return fragment;

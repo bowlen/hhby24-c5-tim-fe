@@ -68,6 +68,7 @@ export function parseQuestionnaire(body, type) {
             parts.push(new NewLinePart());
         }
 
+    }
 
     switch (type) {
         case 'boolean':
@@ -94,7 +95,6 @@ export function parseQuestionnaire(body, type) {
       }
 
     return new MessageBody(body, parts);
-    }
 }
 
 export function stringAsBody(body) {

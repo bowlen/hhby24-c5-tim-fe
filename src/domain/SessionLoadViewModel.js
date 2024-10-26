@@ -119,25 +119,26 @@ export class SessionLoadViewModel extends ViewModel {
             return `Something went wrong: ${error && error.message}.`;
         }
 
+        return "";
         // Statuses related to login are handled by respective login view models
-        if (client) {
-            switch (client.loadStatus.get()) {
-                case LoadStatus.QueryAccount:
-                    return `Querying account encryption setup…`;
-                case LoadStatus.AccountSetup:
-                    return ""; // we'll show a header ing AccountSetupView
-                case LoadStatus.SessionSetup:
-                    return `Setting up your encryption keys…`;
-                case LoadStatus.Loading:
-                    return `Loading your conversations…`;
-                case LoadStatus.FirstSync:
-                    return `Getting your conversations from the server…`;
-                default:
-                    return this._client.loadStatus.get();
-            }
-        }
+        // if (client) {
+        //     switch (client.loadStatus.get()) {
+        //         case LoadStatus.QueryAccount:
+        //             return `Querying account encryption setup…`;
+        //         case LoadStatus.AccountSetup:
+        //             return ""; // we'll show a header ing AccountSetupView
+        //         case LoadStatus.SessionSetup:
+        //             return `Setting up your encryption keys…`;
+        //         case LoadStatus.Loading:
+        //             return `Loading your conversations…`;
+        //         case LoadStatus.FirstSync:
+        //             return `Getting your conversations from the server…`;
+        //         default:
+        //             return this._client.loadStatus.get();
+        //     }
+        // }
 
-        return `Preparing…`;
+        // return `Preparing…`;
     }
 
     _getError() {
