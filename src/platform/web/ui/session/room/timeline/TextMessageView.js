@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { store } from "../../../../../../storage/store.js";
 import {tag, text} from "../../../general/html";
 import {BaseMessageView} from "./BaseMessageView.js";
 import {ReplyPreviewError, ReplyPreviewView} from "./ReplyPreviewView.js";
@@ -134,6 +135,7 @@ const formatFunction = {
 
 //HACKATHON: WIP code; just experimenting
 function renderPart(part, vm) {
+    console.log(vm)
     const f = formatFunction[part.type];
     if (!f) {
         return text(`[unknown part type ${part.type}]`);
@@ -152,7 +154,30 @@ function renderPart(part, vm) {
                 replyButton.className = 'replyButton';
                 replyButtonWrapper.className = 'replyButtonWrapper';
                 replyButton.textContent = (option.replace(/^(\d{2})#/, ""));
-                replyButton.addEventListener('click', () => {sendMessage(option)});
+
+                // subscribe button to store for disabled buttons
+                store.subscribe(() => {
+
+                    // fetch disabled message ids from store
+                    const disabledMessageIds = store.getState().disabledMessageIds;
+
+                    // disable button if message id is in disabledMessageIds
+                    if(disabledMessageIds.includes(vm._entry.id)){
+                        replyButton.disabled = true;
+                    }
+                });
+
+                // event listener for reply button
+                replyButton.addEventListener('click', () => {
+                    
+                    const message_id = vm._entry.id;
+                    store.dispatch({type: 'disableMessage', payload: message_id});
+
+                    // for debugging
+                    sendMessage(option);
+
+                });
+
                 replyButtonWrapper.appendChild(replyButton);
 
                 fragment.appendChild(replyButtonWrapper);
@@ -242,12 +267,9 @@ function renderPart(part, vm) {
 function sendMessage(message) {
     const inputElement = document.querySelector('#msg_comp');
     inputElement.value = message; 
-    console.log("before");
-    console.log(inputElement.innerHTML);  
     const inputButton = document.querySelector('#sendButton');
     inputButton.click();
-    inputElement.innerHTML = null;
-    console.log("after");
+    inputElement.value = null;
     console.log(inputElement.innerHTML);
 }
 
