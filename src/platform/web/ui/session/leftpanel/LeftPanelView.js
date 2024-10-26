@@ -103,7 +103,7 @@ export class LeftPanelView extends TemplateView {
                         vm._currentTileVM._room.inviteUser("@praxisbot:hhm.neo.ohp.ibmgcloud.net");
                     });
                 },
-                className: "button-login"
+                className: "startChatButton"
             }, "Have a chat!"),
             t.button({
                 onClick: () => vm.toggleGrid(),
