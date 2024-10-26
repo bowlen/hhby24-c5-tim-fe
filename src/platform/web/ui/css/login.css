@@ -104,10 +104,10 @@ limitations under the License.
 
 .button-login {
     appearance: none;
-    background-color: #e4e8ec;
+    background-color: #065fc4;
     border-radius: 28px;
     border: 1px solid #e4e8ec;
-    color: #556877;
+    color: #FFFFFF;
     cursor: pointer;
     font-family: "IBM Plex Sans";
     font-size: 14px; /* Set font size */
@@ -125,6 +125,11 @@ limitations under the License.
     align-items: center;
     margin: 0 auto;
     gap: 10px;
+}
+
+.button-login.disabled {
+    background-color: #e4e8ec;
+    color: #556877;
 }
 
 .button-login.hover {
