@@ -38,13 +38,13 @@ limitations under the License.
     color: var(--text-color);
     font-size: 1.4rem;
     --usercolor1: #368BD6;
-    --usercolor2: #AC3BA8;
-    --usercolor3: #03B381;
-    --usercolor4: #E64F7A;
-    --usercolor5: #FF812D;
-    --usercolor6: #2DC2C5;
-    --usercolor7: #5C56F5;
-    --usercolor8: #74D12C;
+    --usercolor2: #006fb7;
+    --usercolor3: #005498;
+    --usercolor4: #003a7b;
+    --usercolor5: #00235e;
+    --usercolor6: #368BD6;
+    --usercolor7: #006fb7;
+    --usercolor8: #005498;
 }
 
 .hydrogen button {

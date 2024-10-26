@@ -24,9 +24,10 @@ export class AnnouncementView extends TemplateView {
 
     render(t, vm) {
         return t.li({
-            className: "AnnouncementView",
-            'data-event-id': vm.eventId
-        }, t.div(vm => vm.announcement));
+            //className: "AnnouncementView", 'data-event-id': vm.eventId
+        }
+        //,t.div(vm => vm.announcement)
+        );
     }
     
     /* This is called by the parent ListView, which just has 1 listener for the whole list */
