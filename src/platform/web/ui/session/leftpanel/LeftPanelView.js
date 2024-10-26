@@ -92,10 +92,10 @@ export class LeftPanelView extends TemplateView {
                         "creation_content": {
                           "m.federate": false
                         },
-                        "name": "The Grand Duke Pub 4",
+                        "name": "Chat mit Praxisbot",
                         "preset": "public_chat",
-                        "room_alias_name": "thepub",
-                        "topic": "All about happy hour"
+                        "room_alias_name": "praxisbot",
+                        "topic": "Chat mit Praxisbot"
                     }).then(room => {
                         console.log(room);
                         vm._options.session.joinRoom(room._roomId);

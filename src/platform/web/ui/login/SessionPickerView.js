@@ -45,8 +45,8 @@ class SessionPickerItemView extends TemplateView {
 export class SessionPickerView extends TemplateView {
     render(t, vm) {
         const sessionList = new ListView({
-            list: vm.sessions,
-            parentProvidesUpdates: false,
+            // list: vm.sessions,
+            // parentProvidesUpdates: false,
         }, sessionInfo => {
             return new SessionPickerItemView(sessionInfo);
         });

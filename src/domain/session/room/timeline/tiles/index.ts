@@ -72,6 +72,7 @@ export function tileClassForEntry(entry: TimelineEntry, options: Options): TileC
                     case "m.freetext":
                     case "m.integer":
                     case "m.multichoice":
+                    case "m.group":
                         return TextTile;
                     case "m.image":
                         return ImageTile;

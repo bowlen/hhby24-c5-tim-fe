@@ -39,7 +39,7 @@ export class PasswordLoginView extends TemplateView {
             t.form({
                 onSubmit: evnt => {
                     evnt.preventDefault();
-                    vm.login("sarah", "tim-sarah123");
+                    vm.login("peterfrickenberger", "tim-peter123");
                 }
             }, [
                 t.if(vm => vm.errorMessage, (t, vm) => t.p({className: "error"}, vm.i18n(vm.errorMessage))),

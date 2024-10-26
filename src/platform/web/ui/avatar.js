@@ -30,7 +30,7 @@ export function renderStaticAvatar(vm, size, extraClasses = undefined) {
     if (extraClasses) {
         avatarClasses += ` ${extraClasses}`;
     }
-    const avatarContent = hasAvatar ? renderImg(vm, size) : text(vm.avatarLetter);
+    const avatarContent = hasAvatar ? renderImg(vm, size) : text("");
     const avatar = tag.div({
         className: avatarClasses,
         title: vm.avatarTitle,
