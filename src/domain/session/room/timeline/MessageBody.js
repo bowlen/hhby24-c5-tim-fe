@@ -33,36 +33,22 @@ export function parsePlainBody(body) {
     return new MessageBody(body, parts);
 }
 //HACKATHON: WIP code to parse questionnaire
-export function parseQuestionnaire(body) {
+export function parseQuestionnaire(body, type) {
+
+    const regex = /\[([^\]]+)\]/g; // Match all occurrences of [option]
+    let options = [];
+    let match;
+    let lastIndex;
+    
+    while ((match = regex.exec(body)) !== null) {
+      options.push(match[1]); // Push the matched option to the array
+      lastIndex = regex.lastIndex;
+      regex.lastIndex = lastIndex - match[0].length; // Reset the search position
+      body = body.replace(match[0], ''); // Remove the matched option from the remaining string
+    }
+
     const parts = [];
     const lines = body.split("\n");
-    console.log(body)
-    var options;
-    console.log(body.trim().toLowerCase().split(':')[0])
-    switch (body.trim().toLowerCase().split(':')[0]) {
-        case 'num':
-          options = ["1", "2", "3", "4", "5"];
-          break;
-        case 'y/n':
-          options = ["Yes", "No", "Maybe"];
-          break;
-        case 'slider10':
-            options = [10];
-        break;
-        case 'slider5':
-            options = [5];
-        break;
-        case 'slider1000':
-            options = [1000];
-        break;
-        case 'sonstige':          
-          options = ["Click Me", "No, Click Me!"];
-          console.log('Sonstige: ');
-          break;
-        default:
-          options = [];
-          console.log('Unknown: ');
-      }
 
     const linkifyCallback = (text, isLink) => {
         if (isLink) {
@@ -82,9 +68,33 @@ export function parseQuestionnaire(body) {
             parts.push(new NewLinePart());
         }
 
-    parts.push(new QuestionnairePart(options));
-    return new MessageBody(body, parts);
     }
+
+    switch (type) {
+        case 'boolean':
+          options = ["Ja", "Nein"];
+          parts.push(new BooleanPart(options));
+          break;
+        case 'choice':
+          parts.push(new ChoicePart(options));
+          break;
+        case 'multichoice':
+            parts.push(new MultiChoicePart(options));
+        break;
+        case 'date':
+          parts.push(new DatePart(options));
+          break;
+        case 'integer':
+          parts.push(new IntegerPart(options));
+          break;
+        case 'freetext':
+            parts.push(new FreeTextPart(options));
+            break;
+        default:
+          break;
+      }
+
+    return new MessageBody(body, parts);
 }
 
 export function stringAsBody(body) {
@@ -190,13 +200,49 @@ export class TextPart {
 
     get type() { return "text"; }
 }
-//HACKATHON: WIP code to export QuestionnairePart
-export class QuestionnairePart {
+
+//HACKATHON: WIP code to export custom part types
+export class ChoicePart {
     constructor(options) {
       this.options = options;
     }
-  
-    get type() { return "questionnaire"; }
+    get type() { return "choice"; }
+}
+
+export class MultiChoicePart {
+    constructor(options) {
+        this.options = options;
+    }
+    get type() { return "multichoice"; }
+
+}
+
+export class BooleanPart {
+    constructor(options) {
+      this.options = options;
+    }
+    get type() { return "boolean"; }
+}
+
+export class DatePart {
+    constructor(options) {
+      this.options = options;
+    }
+    get type() { return "date"; }
+}
+
+export class FreeTextPart {
+    constructor(text) {
+      this.text = text;
+    }
+    get type() { return "freetext"; }
+}
+
+export class IntegerPart {
+    constructor(text) {
+      this.text = text;
+    }
+    get type() { return "integer"; }
 }
 
 function isBlockquote(part){

@@ -15,41 +15,49 @@ limitations under the License.
 */
 
 import {TemplateView} from "../general/TemplateView";
+import "../css/login.css"
+import { classNames } from "../general/html";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 export class PasswordLoginView extends TemplateView {
     render(t, vm) {
         const disabled = vm => !!vm.isBusy;
-        const username = t.input({
-            id: "username",
-            type: "text",
-            placeholder: vm.i18n`Username`,
-            disabled
-        });
         const password = t.input({
             id: "password",
             type: "password",
-            placeholder: vm.i18n`Password`,
+            placeholder: vm.i18n`GesundheitsID-PIN`,
+            style: "flex: 1;",
             disabled
         });
+        const eyeIcon = t.span({
+            className: "bi bi-eye-slash",
+            style: "cursor: default;",
+        })
         
         return t.div({className: "PasswordLoginView form"}, [
             t.if(vm => vm.error, t => t.div({ className: "error" }, vm => vm.error)),
             t.form({
                 onSubmit: evnt => {
                     evnt.preventDefault();
-                    vm.login(username.value, password.value);
+                    vm.login("sarah", "tim-sarah123");
                 }
             }, [
                 t.if(vm => vm.errorMessage, (t, vm) => t.p({className: "error"}, vm.i18n(vm.errorMessage))),
-                t.div({ className: "form-row text" }, [t.label({ for: "username" }, vm.i18n`Username`), username]),
-                t.div({ className: "form-row text" }, [t.label({ for: "password" }, vm.i18n`Password`), password]),
-                t.div({ className: "button-row" }, [
+                t.div({ className: "form-row" }, [
+                    t.label({ for: "password" }),
+                    t.div({ className: "input-wrapper" }, [
+                        password,
+                        eyeIcon, // Add the static closed eye icon next to the password input
+                    ]),
+                ]),
+                t.div({ className: "button-container" }, [ // Add a wrapping div
                     t.button({
-                        className: "button-action primary",
+                        className: "button-login",
                         type: "submit",
                         disabled
-                    }, vm.i18n`Log In`),
+                    }, vm.i18n`Anmelden`),
                 ]),
+                
             ])
         ]);
     }

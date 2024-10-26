@@ -38,13 +38,13 @@ limitations under the License.
     color: var(--text-color);
     font-size: 1.4rem;
     --usercolor1: #368BD6;
-    --usercolor2: #AC3BA8;
-    --usercolor3: #03B381;
-    --usercolor4: #E64F7A;
-    --usercolor5: #FF812D;
-    --usercolor6: #2DC2C5;
-    --usercolor7: #5C56F5;
-    --usercolor8: #74D12C;
+    --usercolor2: #006fb7;
+    --usercolor3: #005498;
+    --usercolor4: #003a7b;
+    --usercolor5: #00235e;
+    --usercolor6: #368BD6;
+    --usercolor7: #006fb7;
+    --usercolor8: #005498;
 }
 
 .hydrogen button {
@@ -200,22 +200,31 @@ a.button-action {
     background-image: url('icons/disable-grid.svg?primary=icon-color');
 }
 
+.button-container {
+    display: flex;
+    justify-content: space-between; /* Space buttons evenly */
+    gap: 5px; /* Adjust the gap between buttons if needed */
+    flex-wrap: nowrap; /* Prevent buttons from wrapping onto a new line */
+}
+
 .replyButtonWrapper {
-    display: inline-block; 
-    margin-right: 5px;
+    display: inline-flex; /* Shrink wrapper to fit around button */
+    align-items: center; /* Center button within wrapper */
+    justify-content: center;
+    flex-grow: 1;
 }
 
 .replyButton {
   align-items: center;
   appearance: none;
-  background-color: #3EB2FD;
-  background-image: linear-gradient(1deg, #4F58FD, #149BF3 99%);
+  background-color: transparent;
   background-size: calc(100% + 20px) calc(100% + 20px);
   border-radius: 100px;
   border-width: 0;
+  border: 1px solid #065FC4;
   box-shadow: none;
   box-sizing: border-box;
-  color: #FFFFFF;
+  color: #065FC4;
   cursor: pointer;
   display: inline-flex;
   font-family: CircularStd,sans-serif;
@@ -233,7 +242,7 @@ a.button-action {
   touch-action: manipulation;
   vertical-align: top;
   white-space: nowrap;
-  margin: 5px;
+  width: 100%;
 }
 
 .replyButton:active,
@@ -243,6 +252,8 @@ a.button-action {
 
 .replyButton:hover {
   background-position: -20px -20px;
+  background-color: #7EB9FB;
+  color: #FFFFFF;
 }
 
 .replyButton:focus:not(:active) {

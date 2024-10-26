@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 /*
 Copyright 2020 Bruno Windels <bruno@windels.cloud>
 
@@ -117,7 +118,12 @@ const formatFunction = {
     code: codePart => tag.code(text(codePart.text)),
     text: textPart => text(textPart.text),
     //HACKATHON: WIP code; adding questionnaire format
-    questionnaire: questionnairePart => text(questionnairePart.options),
+    choice: choicePart => text(choicePart.options),
+    multichoice: multiChoicePart => text(multiChoicePart.options),
+    boolean: booleanPart => text(booleanPart.options),
+    date: datePart => text(datePart.options),
+    freetext: freeTextPart => text(freeTextPart.text),
+    integer: integerPart => text(integerPart.text),
     link: linkPart => tag.a({href: linkPart.url, className: "link", target: "_blank", rel: "noopener" }, renderParts(linkPart.inlines)),
     pill: renderPill,
     format: formatPart => tag[formatPart.format](renderParts(formatPart.children)),
@@ -134,30 +140,20 @@ function renderPart(part, vm) {
     if (!f) {
         return text(`[unknown part type ${part.type}]`);
     }
+
     //HACKATHON: WIP code; rendering reply interfaces based on Event/MessageType
     const fragment = document.createDocumentFragment();
 
     switch(part.type){
-        case 'questionnaire': //goal: case per type of question (slider, choice etc.)
+        case 'choice':
             fragment.appendChild(tag.br());
-            if(part.options.length==1 && part.options[0] === parseInt(part.options[0], 10)){
-                const replySliderWrapper = document.createElement('div');
-                const replySlider = document.createElement('input');
-                replySlider.id = "volume";
-                replySlider.type = "range";
-                replySlider.min = 0;
-                replySlider.max = part.options[0];
-                replySlider.step = 1;
-                replySliderWrapper.appendChild(replySlider);
-                fragment.appendChild(replySliderWrapper);
-            } else {
                 for (let i = 0; i < part.options.length; i++) {
                 const option = part.options[i];
                 const replyButtonWrapper = document.createElement('div');
                 const replyButton = document.createElement('button');
                 replyButton.className = 'replyButton';
                 replyButtonWrapper.className = 'replyButtonWrapper';
-                replyButton.textContent = option;
+                replyButton.textContent = (option.replace(/^(\d{2})#/, ""));
 
                 // subscribe button to store for disabled buttons
                 store.subscribe(() => {
@@ -183,11 +179,86 @@ function renderPart(part, vm) {
                 });
 
                 replyButtonWrapper.appendChild(replyButton);
+
                 fragment.appendChild(replyButtonWrapper);
                 }
-            }
+                return fragment;
+        case 'boolean':
+                fragment.appendChild(tag.br());
+                const replyButtonWrapper = document.createElement('div');
+                const replyButtonYes = document.createElement('button');
+                const replyButtonNo = document.createElement('button');
+                replyButtonYes.className = 'replyButton';
+                replyButtonNo.className = 'replyButton';
+                replyButtonWrapper.className = 'replyButtonWrapper';
+                replyButtonYes.textContent = "Ja";
+                replyButtonYes.value = "true";
+                replyButtonNo.textContent = "Nein";
+                replyButtonNo.value = "false";
+                replyButtonYes.addEventListener('click', () => {sendMessage(replyButtonYes.value)});
+                replyButtonNo.addEventListener('click', () => {sendMessage(replyButtonNo.value)});
+
+                replyButtonWrapper.appendChild(replyButtonYes);
+                replyButtonWrapper.appendChild(replyButtonNo);
+
+                fragment.appendChild(replyButtonWrapper);
+                return fragment;
+        case 'date':
+            fragment.appendChild(tag.br());
+            const datePickerWrapper = document.createElement('div');
+            const datePicker = document.createElement('input');
+            datePicker.type = 'date';
+            datePicker.className = 'datePicker';
+            datePickerWrapper.className = 'datePickerWrapper';
+            datePicker.addEventListener('change', () => {sendMessage(datePicker.value)});
+
+            datePickerWrapper.appendChild(datePicker);
+
+            fragment.appendChild(datePickerWrapper);
             return fragment;
+
+        case 'multichoice':
+            fragment.appendChild(tag.br());
+            let selectedOptions = [];
+
+            const checkboxWrapper = document.createElement('div');
+            checkboxWrapper.className = 'checkboxWrapper';
+            for (let i = 0; i < part.options.length; i++) {
+                const option = part.options[i];
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.name = 'option';
+                checkbox.value = option;
+                checkbox.className = 'custom-checkbox';
+                const label = document.createElement('label');
+                label.textContent = option.replace(/^(\d{2})#/, "");
+                label.htmlFor = 'option';
+                label.className = 'custom-checkbox-label';
+                fragment.appendChild(checkboxWrapper)
+                checkboxWrapper.appendChild(checkbox);
+                checkboxWrapper.appendChild(label);
+            }
+                        
+            const confirmButton = document.createElement('button');
+            confirmButton.textContent = 'bestätigen';
+            confirmButton.className= 'replyButton';
+            confirmButton.addEventListener('click', () => {
+                selectedOptions = [];
+                const parent = document.querySelector('.checkboxWrapper');
+                const checkboxes = parent.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        selectedOptions.push(checkbox.value);
+                    }
+                });
+                sendMessage(selectedOptions);
+            });
+            fragment.appendChild(confirmButton);
+            
+            return fragment;
+
     }
+        
     return f(part);
 }
 

@@ -50,20 +50,42 @@ export class TextTile extends BaseTextTile {
 
     _parseBody(body, format) {
         let messageBody;
-        // if (format === BodyFormat.Html) {
-        //     messageBody = parseHTMLBody(this.platform, this._mediaRepository, body);
-        // } else {
-        //     messageBody = parsePlainBody(body);
-        // }
-        // if (this._getContent()?.msgtype === "m.emote") {
-        //     messageBody.insertEmote(`* ${this.displayName} `);
-        // }
+        let msgtype = this._getContent()?.msgtype;
+        let type;
+        console.log(msgtype)
+        switch(msgtype){
+            case 'm.choice':
+                type = "choice";
+                messageBody = parseQuestionnaire(body, type);
+            break;
+            case 'm.multichoice':
+                type = "multichoice";
+                messageBody = parseQuestionnaire(body, type);
+            break;
+            case 'm.boolean':
+                type = "boolean";
+                messageBody = parseQuestionnaire(body, type);
+            break;
+            case 'm.date':
+                type = "date";
+                messageBody = parseQuestionnaire(body, type);
+            break;
+            case 'm.freetext':
+                type = "freetext";
+                messageBody = parseQuestionnaire(body, type);
+            break;
+            case 'm.integer':
+                type = "integer";
+                messageBody = parseQuestionnaire(body, type);
+            break;
+            default:
+                if (format === BodyFormat.Html) {
+                    messageBody = parseHTMLBody(this.platform, this._mediaRepository, body);
+                } else {
+                    messageBody = parsePlainBody(body);
+                }
+            }
 
-        //HACKATHON: WIP code to parse questionnaire (currently "all" msg types are treated as questionnaire)
-
-        if (this._getContent()?.msgtype != "m.emote") {
-            messageBody = parseQuestionnaire(body);
-        }
         return messageBody;
     }
 }
